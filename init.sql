@@ -29,3 +29,35 @@ BEGIN
 END;
 
 GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Orders')
+BEGIN
+CREATE TABLE Orders (
+    OrderId INT IDENTITY(1,1) PRIMARY KEY,
+    Email NVARCHAR(255) NOT NULL,
+    ProductId INT NOT NULL DEFAULT 0,
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    StripeOrderId NVARCHAR(255) NOT NULL,
+    TransactionFinalized BIT NOT NULL DEFAULT 0,
+);
+END;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Products')
+BEGIN
+    CREATE TABLE Products (
+        ProductId INT IDENTITY(1,1) PRIMARY KEY,
+        ProductName NVARCHAR(50) NOT NULL,
+        Price INT NOT NULL DEFAULT 0,
+    );
+END;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Products)
+BEGIN
+    INSERT INTO Products (ProductName, Price) VALUES
+    ('600', 6), --10 monitors
+    ('3500', 30), -- 50 monitors
+    ('7000', 50); -- 100 monitors
+END;
+GO
